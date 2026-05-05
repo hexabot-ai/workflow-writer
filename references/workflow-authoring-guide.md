@@ -30,7 +30,7 @@ Use this process to convert a business use case into a Hexabot workflow. The rep
 
 ## Actions
 
-- Prefer existing actions discovered from `packages/api/src/extensions/actions/**` or the `/workflow/actions` endpoint when targeting the stock API.
+- Prefer existing actions discovered from `<hexabot-repo>/packages/api/src/extensions/actions/**` or the `/workflow/actions` endpoint when targeting the stock API.
 - Treat built-in API actions as the baseline, not the full universe. A deployment may also include npm-installed `hexabot-action-*` packages or project-local custom actions created in a Hexabot CLI-bootstrapped project.
 - Use task defs with `kind: task`, `action`, optional `inputs`, optional `settings`, optional `bindings`, and optional `description`.
 - Check action workflow-type compatibility before using conversational-only actions in manual or scheduled workflows.

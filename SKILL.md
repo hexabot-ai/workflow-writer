@@ -24,13 +24,13 @@ Use this skill for Hexabot v3 workflow authoring and review. Hexabot workflow YA
 
 ## Source of truth
 
-Before final workflow YAML or action contracts, inspect the relevant current repo files:
+Before final workflow YAML or action contracts, inspect the relevant current repo files. Paths prefixed with `<hexabot-repo>/` are relative to a checked-out Hexabot repository, not this packaged skill. If the current workspace is only the packaged skill, use the bundled references and examples in this skill and state that runtime verification still needs a Hexabot repo or running API.
 
-- DSL and examples: `packages/agentic/DSL.md`, `packages/agentic/src/dsl.types.ts`, `packages/agentic/examples/*/workflow.yml`.
-- Runtime validation and execution: `packages/agentic/src/workflow.ts`, `packages/agentic/src/workflow-compiler.ts`, tests under `packages/agentic/src/__tests__/`.
-- API workflow integration: `packages/api/src/workflow/**`, especially DTOs, entities, input schemas, trigger wrappers, and `lib/workflow-definition.ts`.
-- Actions and bindings: `packages/api/src/actions/**`, `packages/api/src/extensions/actions/**`, `packages/api/src/bindings/**`.
-- Shared workflow types: `packages/types/src/workflow/**`.
+- DSL and repository examples: `<hexabot-repo>/packages/agentic/DSL.md`, `<hexabot-repo>/packages/agentic/src/dsl.types.ts`, and the `workflow.yml` files under `<hexabot-repo>/packages/agentic/examples/`.
+- Runtime validation and execution: `<hexabot-repo>/packages/agentic/src/workflow.ts`, `<hexabot-repo>/packages/agentic/src/workflow-compiler.ts`, tests under `<hexabot-repo>/packages/agentic/src/__tests__/`.
+- API workflow integration: `<hexabot-repo>/packages/api/src/workflow/**`, especially DTOs, entities, input schemas, trigger wrappers, and `<hexabot-repo>/packages/api/src/workflow/lib/workflow-definition.ts`.
+- Actions and bindings: `<hexabot-repo>/packages/api/src/actions/**`, `<hexabot-repo>/packages/api/src/extensions/actions/**`, `<hexabot-repo>/packages/api/src/bindings/**`.
+- Shared workflow types: `<hexabot-repo>/packages/types/src/workflow/**`.
 
 Built-in API actions are not exhaustive. End users can install action packages from npm or create project-local custom actions in a Hexabot CLI-bootstrapped project. Do not invent unsupported YAML fields. If the repo does not expose a needed schema or action, state whether it is assumed to be installed/custom and present the YAML as requiring runtime verification.
 
