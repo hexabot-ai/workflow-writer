@@ -1,0 +1,96 @@
+# Workflow Review Checklist
+
+Use this checklist when reviewing Hexabot workflow YAML or proposed workflow designs.
+
+## Schema validity
+
+- Root fields are limited to supported workflow definition fields.
+- `defs`, `flow`, and `outputs` are present.
+- Task defs use `kind: task` and declare valid `action` names.
+- Non-task defs use binding kinds and include `settings`.
+- Unknown fields are not present in strict DSL objects.
+
+## Workflow type correctness
+
+- Workflow type is configured outside YAML as `conversational`, `manual`, or `scheduled`.
+- The YAML input expectations match the chosen trigger input shape.
+- Actions are compatible with the workflow type.
+- Scheduled workflows have cron configured outside YAML.
+
+## Trigger correctness
+
+- Conversational workflows use inbound fields such as `text`, `message`, `payload`, and `thread_id` only when available.
+- Manual workflows define a clear input schema.
+- Scheduled workflows do not assume user message fields unless they fetch them.
+
+## Action dependencies
+
+- Every `flow` `do` reference exists in `defs`.
+- Action names are either built-in, npm-installed, or project-local custom actions, and the runtime registry can load them.
+- Downstream expressions reference outputs from tasks that are guaranteed to have run, or guard with `$exists`.
+- Side-effecting actions run after validation/classification gates.
+- Fallback or human-handoff actions exist for uncertain routes.
+
+## Binding correctness
+
+- Every binding reference points to an existing def.
+- Binding key matches referenced def `kind`.
+- Single bindings such as `model` use a string reference.
+- Multi bindings such as `tools`, `memory`, and `mcp` use arrays.
+- Action `supportedBindings` allow mounted binding kinds.
+- No duplicate binding references or circular binding chains.
+
+## Memory usage
+
+- Memory defs reference real memory definition IDs when production-ready.
+- Memory scope and schema match the workflow need.
+- Expressions using `$context.memory.<slug>` match actual memory definition slugs, not just binding def names.
+- `update_memory` writes valid slug-keyed values.
+- Sensitive memory is not overexposed to LLM prompts.
+
+## LLM prompt safety
+
+- Prompts delimit user-provided content.
+- Classification/extraction tasks request structured fields with constrained labels.
+- Prompts avoid hidden policy bypasses or instructions to reveal secrets.
+- Low-confidence output leads to clarification or handoff.
+
+## Data privacy
+
+- YAML does not contain secrets, API keys, passwords, tokens, or real customer data.
+- External requests send only the minimum required data.
+- Logs and outputs avoid raw sensitive payloads unless required.
+
+## Error handling
+
+- Defaults include sane `timeout_ms` and retry settings.
+- Non-idempotent side effects avoid unsafe retries.
+- Branches handle missing fields, failed lookups, and low-confidence model responses.
+- The workflow has a clear safe terminal state.
+
+## Retry/fallback behavior
+
+- Retry count and backoff are appropriate for each external dependency.
+- Fallbacks do not silently hide failed critical actions.
+- Human escalation carries enough context for a human to continue.
+
+## Observability
+
+- Task names are descriptive and stable.
+- Outputs expose route, status, important IDs, and summary fields.
+- Custom actions log failures with safe correlation details.
+
+## Testability
+
+- Happy path has deterministic expected outputs.
+- Branches, loops, and fallback paths can be exercised with small inputs.
+- LLM-dependent tasks can be mocked or constrained with structured schemas.
+- YAML can be validated and compiled with runtime action and binding registries.
+
+## Production readiness
+
+- Placeholder IDs and demo-only data are replaced.
+- Required built-in, installed, and custom actions are loadable by the runtime.
+- Required bindings, memory definitions, credentials, and MCP servers exist.
+- Workflow type, schedule, input schema, and publish/version state are configured outside YAML.
+- Operational owner and rollback/versioning process are known.
