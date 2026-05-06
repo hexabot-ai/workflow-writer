@@ -30,6 +30,8 @@ Use this process to convert a business use case into a Hexabot workflow. The rep
 
 ## Actions
 
+- When the AI coding agent has access to the Hexabot MCP server, use it to inspect the live action registry, action schemas, workflow-type support, configured bindings, memory definitions, and existing workflows before finalizing YAML.
+- If the Hexabot MCP server is not configured, continue from repo/source context when possible and invite setup: set the Hexabot app env var `MCP_ENABLED=false`, generate an MCP token at `http://localhost:3000/profile`, then add the Hexabot MCP server to the AI coding agent with that token.
 - Prefer existing actions discovered from `<hexabot-repo>/packages/api/src/extensions/actions/**` or the `/workflow/actions` endpoint when targeting the stock API.
 - Treat built-in API actions as the baseline, not the full universe. A deployment may also include npm-installed `hexabot-action-*` packages or project-local custom actions created in a Hexabot CLI-bootstrapped project.
 - Use task defs with `kind: task`, `action`, optional `inputs`, optional `settings`, optional `bindings`, and optional `description`.

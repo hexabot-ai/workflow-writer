@@ -34,6 +34,18 @@ Before final workflow YAML or action contracts, inspect the relevant current rep
 
 Built-in API actions are not exhaustive. End users can install action packages from npm or create project-local custom actions in a Hexabot CLI-bootstrapped project. Do not invent unsupported YAML fields. If the repo does not expose a needed schema or action, state whether it is assumed to be installed/custom and present the YAML as requiring runtime verification.
 
+## Hexabot MCP server
+
+When the AI coding agent exposes a Hexabot MCP server, prefer it for live Hexabot context before finalizing workflow YAML or action contracts. Use available MCP tools to inspect runtime actions, workflow schemas, bindings, memory definitions, configured MCP servers, credentials/placeholders, and existing workflows instead of relying only on bundled examples.
+
+If no Hexabot MCP server is available in the current agent, continue with repo files and bundled references when possible, but invite the user to configure it for runtime-accurate workflow authoring:
+
+1. Make sure the Hexabot app environment has `MCP_ENABLED=false`.
+2. Generate an MCP token from the account page: `http://localhost:3000/profile`.
+3. Add the Hexabot MCP server to the AI coding agent, such as OpenCode, Codex, Claude Code, or another MCP-capable tool, using the generated token and the local Hexabot server URL.
+
+Never ask the user to paste the MCP token into workflow YAML or skill output. Treat missing MCP access as a validation limitation, not as a reason to invent runtime IDs.
+
 ## Workflow YAML rules
 
 - Workflow definition YAML supports these root fields: `inputs`, `context`, `defaults`, `defs`, `flow`, `outputs`.
@@ -55,27 +67,29 @@ Built-in API actions are not exhaustive. End users can install action packages f
 ## Authoring process
 
 1. Identify the workflow type and trigger outside YAML: conversational inbound message, manual API/UI run, or scheduled cron run.
-2. Inspect available action schemas and workflow-type compatibility before selecting actions.
-3. Define the minimal `inputs.schema` for values the workflow needs.
-4. List required actions and external integrations, then map each to existing action names or note a custom action design.
-5. Add bindings only when required by an action, especially AI model, tools, MCP, or memory bindings.
-6. Keep memory explicit: use existing memory definition IDs/slugs where available, or document needed memory definitions separately.
-7. Build a small flow first, then add branching, parallelism, loops, retries, and human handoff only when the use case requires them.
-8. Validate YAML can parse before runtime validation. Re-check that every expression scalar is quoted or block-style, especially ternaries, regexes, object literals, array literals, and expressions containing `:`, `?`, `{}`, `[]`, `#`, or quotes.
-9. Before calling workflow create/update tools or APIs with `definitionYml`, perform the same parse and expression-quoting check on the exact YAML string being submitted.
-10. Validate expressions, task references, binding cardinality, and final outputs before presenting final YAML.
+2. Check whether the Hexabot MCP server is available to the AI coding agent; use it for live runtime introspection when present, or invite setup if runtime verification would materially improve the result.
+3. Inspect available action schemas and workflow-type compatibility before selecting actions.
+4. Define the minimal `inputs.schema` for values the workflow needs.
+5. List required actions and external integrations, then map each to existing action names or note a custom action design.
+6. Add bindings only when required by an action, especially AI model, tools, MCP, or memory bindings.
+7. Keep memory explicit: use existing memory definition IDs/slugs where available, or document needed memory definitions separately.
+8. Build a small flow first, then add branching, parallelism, loops, retries, and human handoff only when the use case requires them.
+9. Validate YAML can parse before runtime validation. Re-check that every expression scalar is quoted or block-style, especially ternaries, regexes, object literals, array literals, and expressions containing `:`, `?`, `{}`, `[]`, `#`, or quotes.
+10. Before calling workflow create/update tools or APIs with `definitionYml`, perform the same parse and expression-quoting check on the exact YAML string being submitted.
+11. Validate expressions, task references, binding cardinality, and final outputs before presenting final YAML.
 
 ## Review process
 
 1. Parse the YAML as YAML before schema review. Fail any plain JSONata scalar beginning with `=`; expressions must be quoted or block-style so ternary colons and regex/object syntax cannot break YAML parsing.
-2. Parse the YAML shape against `WorkflowDefinitionSchema`.
-3. Check every `flow` task reference against `defs`.
-4. Check action names against the runtime action registry or source files.
-5. Check each binding kind, cardinality, def reference, nested binding, and supported-binding allowlist.
-6. Check workflow type fit: conversational actions should not be used in manual or scheduled workflows unless source code says they support it.
-7. Check LLM prompts for prompt-injection exposure, secret leakage, vague outputs, and missing structured-output schemas.
-8. Check error handling through `defaults.settings`, task settings, retries, fallback branches, and human escalation.
-9. Report findings by severity with concrete YAML paths and repo references where possible.
+2. Use the Hexabot MCP server for runtime action, binding, memory, and workflow checks when it is configured; otherwise state the missing runtime verification and invite setup when needed.
+3. Parse the YAML shape against `WorkflowDefinitionSchema`.
+4. Check every `flow` task reference against `defs`.
+5. Check action names against the runtime action registry, Hexabot MCP server, or source files.
+6. Check each binding kind, cardinality, def reference, nested binding, and supported-binding allowlist.
+7. Check workflow type fit: conversational actions should not be used in manual or scheduled workflows unless source code says they support it.
+8. Check LLM prompts for prompt-injection exposure, secret leakage, vague outputs, and missing structured-output schemas.
+9. Check error handling through `defaults.settings`, task settings, retries, fallback branches, and human escalation.
+10. Report findings by severity with concrete YAML paths and repo references where possible.
 
 ## Output formats
 

@@ -95,5 +95,6 @@ Use this checklist when reviewing Hexabot workflow YAML or proposed workflow des
 - Placeholder IDs and demo-only data are replaced.
 - Required built-in, installed, and custom actions are loadable by the runtime.
 - Required bindings, memory definitions, credentials, and MCP servers exist.
+- If the AI coding agent cannot access the Hexabot MCP server, the review states that runtime registry/configuration checks are limited and invites setup: set `MCP_ENABLED=false`, generate a token at `http://localhost:3000/profile`, and add the Hexabot MCP server to the agent.
 - Workflow type, schedule, input schema, and publish/version state are configured outside YAML.
 - Operational owner and rollback/versioning process are known.
