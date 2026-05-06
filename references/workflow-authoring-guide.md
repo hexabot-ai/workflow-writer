@@ -91,6 +91,20 @@ Use this process to convert a business use case into a Hexabot workflow. The rep
 - Expose final `outputs` that summarize route, side effects, and important IDs.
 - For custom actions, log integration failures without leaking secrets or raw sensitive payloads.
 
+## Expression YAML quoting
+
+- Quote every JSONata expression scalar with double quotes, or use `>-` for long expressions.
+- Apply this anywhere the value starts with `=`, including `condition`, loop `while`, action `inputs`, action `settings`, and final `outputs`.
+- Do not emit plain scalars like `result: =$ok ? "fine" : "not_fine"`; YAML parsers can treat the ternary colon as mapping syntax. Prefer `result: "=$ok ? 'fine' : 'not_fine'"`.
+- For complex ternaries, regexes, object literals, array literals, or expressions containing `:`, `?`, `{}`, `[]`, `#`, or mixed quotes, use a folded block scalar:
+
+  ```yaml
+  result: >-
+    =$exists($match($lowercase($trim($output.await_mood_reply.text)), /fine|good/))
+      ? 'fine'
+      : 'not_fine'
+  ```
+
 ## Security/privacy
 
 - Minimize PII in prompts and external requests.
@@ -100,6 +114,8 @@ Use this process to convert a business use case into a Hexabot workflow. The rep
 
 ## Testing
 
+- First confirm the emitted document parses as YAML; do this before schema or runtime validation.
+- When creating or updating a workflow through a tool/API, run this parse check against the exact `definitionYml` string before submitting it.
 - Validate YAML against `WorkflowDefinitionSchema`.
 - Compile with action and binding registries when possible.
 - Test happy path, low-confidence path, missing input path, retry/failure path, and human-handoff path.

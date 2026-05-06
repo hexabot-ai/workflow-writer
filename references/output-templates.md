@@ -18,6 +18,7 @@ Workflow metadata to configure outside YAML:
 ```
 
 Validation notes:
+- Confirmed all JSONata expression scalars are quoted or block-style before schema validation.
 - ...
 ````
 

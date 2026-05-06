@@ -4,6 +4,9 @@ Use this checklist when reviewing Hexabot workflow YAML or proposed workflow des
 
 ## Schema validity
 
+- The document parses as YAML before schema validation.
+- Every JSONata expression scalar beginning with `=` is quoted or block-style, especially values under `condition`, loop `while`, action `inputs`/`settings`, and `outputs`.
+- No plain expression scalar contains ternary `:`, regex syntax, object/array literals, `#`, or mixed quotes that can be reinterpreted as YAML syntax.
 - Root fields are limited to supported workflow definition fields.
 - `defs`, `flow`, and `outputs` are present.
 - Task defs use `kind: task` and declare valid `action` names.

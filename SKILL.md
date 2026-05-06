@@ -41,6 +41,13 @@ Built-in API actions are not exhaustive. End users can install action packages f
 - `defs` is the root registry. Task defs use `kind: task` and declare `action`; non-task defs use a binding kind and must declare `settings`.
 - Supported flow primitives are `do`, `parallel`, `conditional`, and `loop`. Loop blocks require `type: for_each` or `type: while`.
 - Any string beginning with `=` is evaluated as JSONata. Literal strings must not begin with `=`. Final `outputs` values must be expression strings.
+- Quote every JSONata YAML scalar with double quotes, or use a block scalar for long expressions. This applies to `condition`, `while`, action `inputs`/`settings`, and every `outputs` value. Plain scalars such as `result: =$a ? "yes" : "no"` can be parsed as nested YAML mappings because of the ternary colon. Prefer `result: "=$a ? 'yes' : 'no'"` or:
+  ```yaml
+  result: >-
+    =$a
+      ? 'yes'
+      : 'no'
+  ```
 - Expressions can use `$input`, `$context`, `$output.<task>`, `$iteration`, and `$accumulator`.
 - Task output mapping is not supported; the raw action result is stored under `$output.<task>`.
 - Binding references must point to existing defs with matching `kind`. Current built-in binding kinds include `model` as a single reference and `tools`, `memory`, and `mcp` as arrays.
@@ -54,18 +61,21 @@ Built-in API actions are not exhaustive. End users can install action packages f
 5. Add bindings only when required by an action, especially AI model, tools, MCP, or memory bindings.
 6. Keep memory explicit: use existing memory definition IDs/slugs where available, or document needed memory definitions separately.
 7. Build a small flow first, then add branching, parallelism, loops, retries, and human handoff only when the use case requires them.
-8. Validate expressions, task references, binding cardinality, and final outputs before presenting final YAML.
+8. Validate YAML can parse before runtime validation. Re-check that every expression scalar is quoted or block-style, especially ternaries, regexes, object literals, array literals, and expressions containing `:`, `?`, `{}`, `[]`, `#`, or quotes.
+9. Before calling workflow create/update tools or APIs with `definitionYml`, perform the same parse and expression-quoting check on the exact YAML string being submitted.
+10. Validate expressions, task references, binding cardinality, and final outputs before presenting final YAML.
 
 ## Review process
 
-1. Parse the YAML shape against `WorkflowDefinitionSchema`.
-2. Check every `flow` task reference against `defs`.
-3. Check action names against the runtime action registry or source files.
-4. Check each binding kind, cardinality, def reference, nested binding, and supported-binding allowlist.
-5. Check workflow type fit: conversational actions should not be used in manual or scheduled workflows unless source code says they support it.
-6. Check LLM prompts for prompt-injection exposure, secret leakage, vague outputs, and missing structured-output schemas.
-7. Check error handling through `defaults.settings`, task settings, retries, fallback branches, and human escalation.
-8. Report findings by severity with concrete YAML paths and repo references where possible.
+1. Parse the YAML as YAML before schema review. Fail any plain JSONata scalar beginning with `=`; expressions must be quoted or block-style so ternary colons and regex/object syntax cannot break YAML parsing.
+2. Parse the YAML shape against `WorkflowDefinitionSchema`.
+3. Check every `flow` task reference against `defs`.
+4. Check action names against the runtime action registry or source files.
+5. Check each binding kind, cardinality, def reference, nested binding, and supported-binding allowlist.
+6. Check workflow type fit: conversational actions should not be used in manual or scheduled workflows unless source code says they support it.
+7. Check LLM prompts for prompt-injection exposure, secret leakage, vague outputs, and missing structured-output schemas.
+8. Check error handling through `defaults.settings`, task settings, retries, fallback branches, and human escalation.
+9. Report findings by severity with concrete YAML paths and repo references where possible.
 
 ## Output formats
 
