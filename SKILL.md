@@ -49,6 +49,7 @@ Never ask the user to paste the MCP token into workflow YAML or skill output. Tr
 ## Workflow YAML rules
 
 - Workflow definition YAML supports these root fields: `inputs`, `context`, `defaults`, `defs`, `flow`, `outputs`.
+- Omit the root `inputs` section for `conversational` and `scheduled` workflows. The API owns fixed trigger input schemas for those workflow types, and the agentic runner treats any YAML-declared `inputs.schema` as a strict parser; partial schemas can reject runtime fields such as `message_type`, `message`, `mid`, or `triggered_at`.
 - Workflow metadata such as name, description, `WorkflowType` (`conversational`, `manual`, `scheduled`), schedule cron, publish state, layout, and version message lives in API workflow records outside the YAML definition.
 - `defs` is the root registry. Task defs use `kind: task` and declare `action`; non-task defs use a binding kind and must declare `settings`.
 - Supported flow primitives are `do`, `parallel`, `conditional`, and `loop`. Loop blocks require `type: for_each` or `type: while`.
@@ -69,7 +70,7 @@ Never ask the user to paste the MCP token into workflow YAML or skill output. Tr
 1. Identify the workflow type and trigger outside YAML: conversational inbound message, manual API/UI run, or scheduled cron run.
 2. Check whether the Hexabot MCP server is available to the AI coding agent; use it for live runtime introspection when present, or invite setup if runtime verification would materially improve the result.
 3. Inspect available action schemas and workflow-type compatibility before selecting actions.
-4. Define the minimal `inputs.schema` for values the workflow needs.
+4. For manual workflows, define the minimal `inputs.schema` for values the workflow needs. For conversational and scheduled workflows, omit root `inputs` and read trigger fields directly from `$input`.
 5. List required actions and external integrations, then map each to existing action names or note a custom action design.
 6. Add bindings only when required by an action, especially AI model, tools, MCP, or memory bindings.
 7. Keep memory explicit: use existing memory definition IDs/slugs where available, or document needed memory definitions separately.
@@ -82,7 +83,7 @@ Never ask the user to paste the MCP token into workflow YAML or skill output. Tr
 
 1. Parse the YAML as YAML before schema review. Fail any plain JSONata scalar beginning with `=`; expressions must be quoted or block-style so ternary colons and regex/object syntax cannot break YAML parsing.
 2. Use the Hexabot MCP server for runtime action, binding, memory, and workflow checks when it is configured; otherwise state the missing runtime verification and invite setup when needed.
-3. Parse the YAML shape against `WorkflowDefinitionSchema`.
+3. Parse the YAML shape against `WorkflowDefinitionSchema`, and flag root `inputs` on conversational or scheduled workflows.
 4. Check every `flow` task reference against `defs`.
 5. Check action names against the runtime action registry, Hexabot MCP server, or source files.
 6. Check each binding kind, cardinality, def reference, nested binding, and supported-binding allowlist.

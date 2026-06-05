@@ -17,13 +17,14 @@ Use this process to convert a business use case into a Hexabot workflow. The rep
 
 ## Trigger
 
-- For conversational workflows, inspect the fixed input schema for fields like `text`, `message`, `message_type`, `payload`, `mid`, and `thread_id`.
-- For scheduled workflows, inspect the fixed input schema for `schedule` and `triggered_at`.
+- For conversational workflows, use fixed runtime fields such as `text`, `message`, `message_type`, `payload`, `mid`, and `thread_id`.
+- For scheduled workflows, use fixed runtime fields such as `schedule` and `triggered_at`.
 - For manual workflows, define or confirm the external input schema and keep YAML `inputs.schema` aligned.
 
 ## Inputs
 
-- Define only inputs used by the workflow.
+- Omit the root `inputs` section for `conversational` and `scheduled` workflows. The API stores fixed trigger input schemas for those workflow types, while the agentic runner uses any YAML-declared `inputs.schema` as a strict runtime parser; a partial schema can reject injected trigger fields.
+- For `manual` workflows, define only inputs used by the workflow.
 - Use supported field types: `string`, `number`, `integer`, `boolean`, `array`, and `object`.
 - Add `items` for arrays and `properties` for objects.
 - Avoid requiring data that actually belongs in runtime context, memory, or an integration lookup.

@@ -4,16 +4,9 @@
 # - type: conversational
 # - name/description/publish state/version message
 # Replace the placeholder credential ID before running in a real environment.
+# Do not add a root `inputs` section for conversational workflows; trigger input
+# fields such as $input.text and $input.thread_id are supplied by the runtime.
 ---
-inputs:
-  schema:
-    text:
-      type: string
-      description: "Inbound customer message text from the conversational trigger."
-    thread_id:
-      type: string
-      description: "Conversation thread id supplied by the runtime."
-
 defaults:
   settings:
     timeout_ms: 10000

@@ -16,14 +16,14 @@ Use this checklist when reviewing Hexabot workflow YAML or proposed workflow des
 ## Workflow type correctness
 
 - Workflow type is configured outside YAML as `conversational`, `manual`, or `scheduled`.
-- The YAML input expectations match the chosen trigger input shape.
+- Conversational and scheduled workflows omit root `inputs`; fixed trigger inputs are supplied by the runtime. Manual workflows define a clear input schema when they require external input.
 - Actions are compatible with the workflow type.
 - Scheduled workflows have cron configured outside YAML.
 
 ## Trigger correctness
 
-- Conversational workflows use inbound fields such as `text`, `message`, `payload`, and `thread_id` only when available.
-- Manual workflows define a clear input schema.
+- Conversational workflows read inbound fields such as `text`, `message`, `message_type`, `payload`, `mid`, and `thread_id` from `$input` without redeclaring them under root `inputs`.
+- Manual workflows define a clear input schema when they need external inputs.
 - Scheduled workflows do not assume user message fields unless they fetch them.
 
 ## Action dependencies
