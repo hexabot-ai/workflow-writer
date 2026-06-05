@@ -1,6 +1,6 @@
 # Hexabot Workflow Writer Skill
 
-This repository packages a Codex skill that helps AI coding agents generate, review, and improve Hexabot v3 workflow YAML, action contracts, bindings, memory requirements, and agentic automation designs.
+This repository packages a skill that helps AI coding agents generate, review, and improve Hexabot v3 workflow YAML, action contracts, bindings, memory requirements, and agentic automation designs.
 
 The agent-facing instructions live in [`skills/hexabot-workflow-writer/SKILL.md`](skills/hexabot-workflow-writer/SKILL.md). This README is human-facing GitHub documentation for the skill repository.
 
@@ -56,10 +56,6 @@ If only this packaged skill is available, the included references and examples c
 - Website: <https://hexabot.ai/>
 - Documentation: <https://docs.hexabot.ai/>
 - GitHub repository: <https://github.com/hexabot-ai/Hexabot>
-- GitHub issues: <https://github.com/hexabot-ai/Hexabot/issues>
-- GitHub pull requests: <https://github.com/hexabot-ai/Hexabot/pulls>
-- CLI package: <https://www.npmjs.com/package/@hexabot-ai/cli>
-- CLI source docs: <https://github.com/hexabot-ai/Hexabot/tree/main/packages/cli>
 - Extensions marketplace: <https://hexabot.ai/extensions>
 - Discord community: <https://discord.gg/hexabot>
 
@@ -69,7 +65,6 @@ When authoring workflows against a local Hexabot project, the default developmen
 
 - Admin UI: <http://localhost:3000>
 - API: <http://localhost:3000/api>
-- API docs, when enabled in non-production environments: <http://localhost:3000/docs>
 
 Common project bootstrap commands:
 
