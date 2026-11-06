@@ -40,9 +40,9 @@ When the AI coding agent exposes a Hexabot MCP server, prefer it for live Hexabo
 
 If no Hexabot MCP server is available in the current agent, continue with repo files and bundled references when possible, but invite the user to configure it for runtime-accurate workflow authoring:
 
-1. Make sure the Hexabot app environment has `MCP_ENABLED=false`.
+1. Set `MCP_ENABLED=true` in the Hexabot API environment and restart the API.
 2. Generate an MCP token from the account page: `http://localhost:3000/profile`.
-3. Add the Hexabot MCP server to the AI coding agent, such as OpenCode, Codex, Claude Code, or another MCP-capable tool, using the generated token and the local Hexabot server URL.
+3. Add the Hexabot MCP server to the AI coding agent, such as OpenCode, Codex, Claude Code, or another MCP-capable tool, using the Streamable HTTP endpoint `http://localhost:3000/api/mcp` and the generated token as a bearer token.
 
 Never ask the user to paste the MCP token into workflow YAML or skill output. Treat missing MCP access as a validation limitation, not as a reason to invent runtime IDs.
 
